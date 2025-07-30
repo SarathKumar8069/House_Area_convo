@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>House Area Converter</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="search-box">
+      <h1>Enter House Dimensions (e.g. 18*50)</h1>
+      <input type="text" id="dimensions" placeholder="Enter dimensions">
+      <button onclick="convert()">Convert</button>
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    function convert() {
+      const dimensions = document.getElementById('dimensions').value;
+
+      fetch('/convert', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({dimensions})
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          document.getElementById('result').innerHTML = `<p style="color:red;">${data.error}</p>`;
+        } else {
+          document.getElementById('result').innerHTML = `
+            <p><strong>Area (sq ft):</strong> ${data.area_sqft}</p>
+            <p><strong>Cents:</strong> ${data.cents}</p>
+            <p><strong>Ankhanams:</strong> ${data.ankhanams}</p>
+            <p><strong>Square Meters:</strong> ${data.sq_meters}</p>
+            <p><strong>Square Yards:</strong> ${data.sq_yards}</p>
+          `;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
